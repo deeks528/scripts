@@ -11,8 +11,6 @@ if [ "$#" -lt 2 ]; then
 fi
 
 ENV_PATH="${!#}"
-
-# Remove the last argument (file path)
 VARIABLES=("${@:1:$#-1}")
 
 mkdir -p "$(dirname "$ENV_PATH")"
@@ -20,7 +18,7 @@ mkdir -p "$(dirname "$ENV_PATH")"
 > "$ENV_PATH"
 
 for VAR in "${VARIABLES[@]}"; do
-    read -rp "$VAR: " VALUE
+    read -rp "$VAR: " VALUE </dev/tty
     echo "$VAR=$VALUE" >> "$ENV_PATH"
 done
 
