@@ -51,6 +51,9 @@ while IFS= read -r LINE || [ -n "$LINE" ]; do
         VAR="${BASH_REMATCH[1]}"
         DEFAULT="${BASH_REMATCH[2]}"
 
+        # Empty line before every input
+        echo
+        
         # Description
         if [ -n "$DESCRIPTION" ]; then
             echo -e "${CYAN}${DESCRIPTION}${RESET}"
@@ -65,9 +68,6 @@ while IFS= read -r LINE || [ -n "$LINE" ]; do
         read -erp "$(echo -e "${GREEN}${VAR}${RESET}: ")" VALUE </dev/tty
 
         echo "$VAR=$VALUE" >> "$ENV_PATH"
-
-        # Empty line after every input
-        echo
 
         DESCRIPTION=""
     else
