@@ -2,8 +2,15 @@
 
 set -e
 
+# Colors
+CYAN='\033[0;36m'
+YELLOW='\033[0;33m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+RESET='\033[0m'
+
 if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <ENV_EXAMPLE> <ENV_FILE>"
+    echo -e "${RED}Usage:${RESET} $0 <ENV_EXAMPLE> <ENV_FILE>"
     echo
     echo "Example:"
     echo "  $0 .env.example .env"
@@ -14,7 +21,7 @@ ENV_EXAMPLE="$1"
 ENV_PATH="$2"
 
 if [ ! -f "$ENV_EXAMPLE" ]; then
-    echo "Error: File not found: $ENV_EXAMPLE"
+    echo -e "${RED}Error:${RESET} File not found: $ENV_EXAMPLE"
     exit 1
 fi
 
@@ -44,19 +51,23 @@ while IFS= read -r LINE || [ -n "$LINE" ]; do
         VAR="${BASH_REMATCH[1]}"
         DEFAULT="${BASH_REMATCH[2]}"
 
-        # Display description
+        # Description
         if [ -n "$DESCRIPTION" ]; then
-            echo "$DESCRIPTION"
+            echo -e "${CYAN}${DESCRIPTION}${RESET}"
         fi
 
-        # Display example if a value exists
+        # Example
         if [ -n "$DEFAULT" ]; then
-            echo "(example: $DEFAULT)"
+            echo -e "${YELLOW}(example: ${DEFAULT})${RESET}"
         fi
 
-        read -rp "$VAR: " VALUE </dev/tty
+        # Input
+        read -erp "$(echo -e "${GREEN}${VAR}${RESET}: ")" VALUE </dev/tty
 
         echo "$VAR=$VALUE" >> "$ENV_PATH"
+
+        # Empty line after every input
+        echo
 
         DESCRIPTION=""
     else
@@ -65,5 +76,4 @@ while IFS= read -r LINE || [ -n "$LINE" ]; do
 
 done < "$ENV_EXAMPLE"
 
-echo
-echo "✓ .env file created: $ENV_PATH"
+echo -e "${GREEN}✓ .env file created: ${ENV_PATH}${RESET}"
